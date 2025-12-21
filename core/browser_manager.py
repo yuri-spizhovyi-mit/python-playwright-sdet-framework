@@ -1,21 +1,33 @@
-from playwright.sync_api import sync_playwright
+"""Browser lifecycle manager."""
+
+from playwright.sync_api import sync_playwright, Browser, BrowserContext
 
 
 class BrowserManager:
-    def __init__(self, browser_name: str = "chromium", headless: bool = True):
-        self.browser_name = browser_name
-        self.headless = headless
-        self._pw = None
-        self._browser = None
+    """Manages Playwright browser instances."""
 
-    def start(self):
-        self._pw = sync_playwright().start()
-        browser_type = getattr(self._pw, self.browser_name)
-        self._browser = browser_type.launch(headless=self.headless)
-        return self._browser
+    def __init__(self, browser_type="chromium", headless=True):
+        self.browser_type = browser_type
+        self.headless = headless
+        self.playwright = None
+        self.browser = None
+
+    def start(self) -> Browser:
+        """Launch browser."""
+        self.playwright = sync_playwright().start()
+        browser_launcher = getattr(self.playwright, self.browser_type)
+        self.browser = browser_launcher.launch(headless=self.headless)
+        return self.browser
+
+    def create_context(self, **kwargs) -> BrowserContext:
+        """Create isolated browser context."""
+        return self.browser.new_context(
+            viewport={"width": 1920, "height": 1080}, **kwargs
+        )
 
     def stop(self):
-        if self._browser:
-            self._browser.close()
-        if self._pw:
-            self._pw.stop()
+        """Cleanup resources."""
+        if self.browser:
+            self.browser.close()
+        if self.playwright:
+            self.playwright.stop()
