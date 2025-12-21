@@ -3,6 +3,8 @@ from core.config import Config
 
 
 class BaseSaucePage:
+    """Base class for Sauce Demo page objects providing navigation convenience methods."""
+
     def __init__(self, page):
         self.page = page
 

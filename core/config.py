@@ -5,6 +5,8 @@ load_dotenv()
 
 
 class Config:
+    """Configuration options loaded from environment variables."""
+
     HEADLESS = os.getenv("HEADLESS", "true").lower() == "true"
     BROWSER = os.getenv("BROWSER", "chromium")
 
