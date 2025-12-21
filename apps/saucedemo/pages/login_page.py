@@ -1,5 +1,6 @@
 from apps.saucedemo.pages.base_sauce_page import BaseSaucePage
 
+
 class LoginPage(BaseSaucePage):
     USERNAME = '[data-test="username"]'
     PASSWORD = '[data-test="password"]'

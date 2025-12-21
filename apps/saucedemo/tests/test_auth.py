@@ -2,6 +2,7 @@ import pytest
 from apps.saucedemo.pages.login_page import LoginPage
 from apps.saucedemo.pages.inventory_page import InventoryPage
 
+
 @pytest.mark.smoke
 def test_login_success(page, sauce_creds):
     username, password = sauce_creds

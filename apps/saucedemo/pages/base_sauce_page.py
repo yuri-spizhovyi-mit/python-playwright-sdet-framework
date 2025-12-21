@@ -1,6 +1,7 @@
 # apps/saucedemo/pages/base_sauce_page.py
 from core.config import Config
 
+
 class BaseSaucePage:
     def __init__(self, page):
         self.page = page
