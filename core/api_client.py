@@ -1,4 +1,5 @@
-﻿import requests
+import requests
+
 
 class APIClient:
     def __init__(self, base_url: str):

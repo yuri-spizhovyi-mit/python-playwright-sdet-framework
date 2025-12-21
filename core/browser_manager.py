@@ -1,4 +1,5 @@
-﻿from playwright.sync_api import sync_playwright
+from playwright.sync_api import sync_playwright
+
 
 class BrowserManager:
     def __init__(self, browser_name: str = "chromium", headless: bool = True):
