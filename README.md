@@ -43,3 +43,25 @@ python-playwright-sdet-framework/
   .gitignore
   README.md
 ```
+
+## 🐛 Debugging Failed Tests
+
+### Automatic Artifacts
+
+On test failure, the framework automatically captures:
+
+- **Screenshot**: `reports/screenshots/<test>_<timestamp>.png`
+- **Console logs**: `reports/logs/<test>_<timestamp>.txt`
+- **Playwright trace** (optional): `reports/traces/<test>_<timestamp>.zip`
+
+### Viewing Traces
+
+```bash
+# Enable tracing for debugging
+pytest --trace-on-failure=true
+
+# View trace in Playwright's inspector
+playwright show-trace reports/traces/<trace-file>.zip
+```
+
+**Why traces are disabled by default:** Tracing adds ~10-15% overhead and 5-10MB per test. For portfolio demos and CI speed, screenshots + console logs are sufficient. Enable traces when debugging complex flaky tests.

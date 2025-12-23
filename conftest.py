@@ -139,7 +139,8 @@ def playwright_artifacts(request):
                 allure.attach.file(
                     str(trace_path),
                     name="playwright_trace",
-                    attachment_type=allure.attachment_type.ZIP,
+                    attachment_type=allure.attachment_type.TEXT,
+                    extension="zip",
                 )
         else:
             context.tracing.stop()
