@@ -11,3 +11,4 @@ def test_login_success(page, sauce_creds):
     login.login(username, password)
 
     InventoryPage(page).assert_loaded()
+    assert False
