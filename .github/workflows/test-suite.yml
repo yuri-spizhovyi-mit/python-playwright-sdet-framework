@@ -35,15 +35,22 @@ jobs:
           HEADLESS: "true"
           BROWSER: "chromium"
         run: |
-          pytest -m smoke -v
+          pytest -m smoke -v --alluredir=allure-results
 
-      - name: Generate Allure Report (HTML)
+      - name: Install Allure CLI
         if: always()
-        uses: simple-elf/allure-report-action@v1.8
-        with:
-          allure_results: allure-results
-          allure_report: allure-report
-          keep_reports: 5
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget unzip
+          wget https://github.com/allure-framework/allure2/releases/download/2.25.0/allure-2.25.0.zip
+          unzip allure-2.25.0.zip
+          sudo mv allure-2.25.0 /opt/allure
+          sudo ln -s /opt/allure/bin/allure /usr/bin/allure
+
+      - name: Generate Allure HTML report
+        if: always()
+        run: |
+          allure generate allure-results --clean -o allure-report
 
       - name: Upload Allure HTML report
         if: always()
