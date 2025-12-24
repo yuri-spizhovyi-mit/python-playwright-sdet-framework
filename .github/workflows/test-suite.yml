@@ -37,6 +37,22 @@ jobs:
         run: |
           pytest -m smoke -v
 
+      - name: Generate Allure Report (HTML)
+        if: always()
+        uses: simple-elf/allure-report-action@v1.8
+        with:
+          allure_results: allure-results
+          allure_report: allure-report
+          keep_reports: 5
+
+      - name: Upload Allure HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: allure-report
+          if-no-files-found: ignore
+
       - name: Upload artifacts (only on failure)
         if: failure()
         uses: actions/upload-artifact@v4
