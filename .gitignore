@@ -25,3 +25,17 @@ reports/allure-results/*
 # OS
 .DS_Store
 Thumbs.db
+
+# Tool caches
+.ruff_cache/
+
+# Allure output (some setups write here too)
+allure-results/
+
+# Extra artifacts created by root conftest
+reports/traces/*
+reports/logs/*
+!reports/traces/.gitkeep
+!reports/logs/.gitkeep
+
+*.log
