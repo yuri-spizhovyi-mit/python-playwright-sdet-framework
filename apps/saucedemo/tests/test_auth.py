@@ -1,3 +1,7 @@
+"""
+Test suite for verifying the authentication functionality of SauceDemo using Playwright.
+"""
+
 import pytest
 from apps.saucedemo.pages.login_page import LoginPage
 from apps.saucedemo.pages.inventory_page import InventoryPage
@@ -11,4 +15,3 @@ def test_login_success(page, sauce_creds):
     login.login(username, password)
 
     InventoryPage(page).assert_loaded()
-    assert False

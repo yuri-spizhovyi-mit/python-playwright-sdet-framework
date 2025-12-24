@@ -1,5 +1,6 @@
-# App-specific fixtures
-# saucedemo
+"""
+Pytest configuration and fixtures for SauceDemo application tests.
+"""
 import pytest
 from core.config import Config
 
