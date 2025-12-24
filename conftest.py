@@ -1,5 +1,5 @@
 """
-Root-level pytest configuration with failure artifacts (Option A).
+Root-level pytest configuration with failure artifacts.
 
 This file is auto-discovered by pytest (no imports needed).
 It applies to all tests in the repo, but only activates for UI tests that
@@ -60,6 +60,52 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         default="true",
         help="Save Playwright trace zip on failure (true/false). Default: true",
     )
+
+def pytest_addoption(parser: pytest.Parser) -> None:
+    """
+    Register custom CLI options for test execution modes.
+    """
+    group = parser.getgroup("execution modes")
+
+    group.addoption(
+        "--smoke",
+        action="store_true",
+        help="Run smoke tests only",
+    )
+    group.addoption(
+        "--full",
+        action="store_true",
+        help="Run full regression suite (exclude flaky tests)",
+    )
+    group.addoption(
+        "--flaky",
+        action="store_true",
+        help="Run flaky tests only",
+    )
+
+def pytest_configure(config: pytest.Config) -> None:
+    """
+    Apply marker expressions based on custom CLI execution flags.
+    """
+    selected = [
+        config.getoption("--smoke"),
+        config.getoption("--full"),
+        config.getoption("--flaky"),
+    ]
+
+    if sum(bool(x) for x in selected) > 1:
+        raise pytest.UsageError(
+            "Only one execution mode can be selected: --smoke, --full, or --flaky"
+        )
+
+    if config.getoption("--smoke"):
+        config.option.markexpr = "smoke"
+
+    elif config.getoption("--full"):
+        config.option.markexpr = "not flaky"
+
+    elif config.getoption("--flaky"):
+        config.option.markexpr = "flaky"
 
 
 @pytest.hookimpl(hookwrapper=True, tryfirst=True)
