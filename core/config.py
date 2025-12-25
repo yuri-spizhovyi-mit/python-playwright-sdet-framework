@@ -43,11 +43,22 @@ class Config:
     # ============================================================================
     # Test Credentials
     # ============================================================================
-    # SauceDemo users
-    SAUCE_USERNAME = os.getenv("SAUCE_USERNAME", "standard_user")
-    SAUCE_PASSWORD = os.getenv("SAUCE_PASSWORD", "secret_sauce")
-    SAUCE_LOCKED_USER = os.getenv("SAUCE_LOCKED_USER", "locked_out_user")
+    # SauceDemo user personas (public test accounts)
+    SAUCE_STANDARD_USER = os.getenv("SAUCE_STANDARD_USER_USERNAME", "standard_user")
+    SAUCE_LOCKED_OUT_USER = os.getenv("SAUCE_LOCKED_OUT_USER", "locked_out_user")
     SAUCE_PROBLEM_USER = os.getenv("SAUCE_PROBLEM_USER", "problem_user")
+    SAUCE_PERFORMANCE_GLITCH_USER = os.getenv(
+        "SAUCE_PERFORMANCE_GLITCH_USER", "performance_glitch_user"
+    )
+    SAUCE_ERROR_USER = os.getenv("SAUCE_ERROR_USER", "error_user")
+    SAUCE_VISUAL_USER = os.getenv("SAUCE_VISUAL_USER", "visual_user")
+
+    # SauceDemo user personas (public test accounts)
+    SAUCE_INVALID_USER = os.getenv("SAUCE_INVALID_USER", "invalid_user")
+
+    # Secrets
+    SAUCE_PASSWORD = os.getenv("SAUCE_PASSWORD", "secret_sauce")
+    SAUCE_INVALID_PASSWORD = os.getenv("SAUCE_INVALID_PASSWORD", "invalid_password")
 
     # ReqRes API (public test API uses fixed credentials)
     REQRES_EMAIL = os.getenv("REQRES_EMAIL", "eve.holt@reqres.in")

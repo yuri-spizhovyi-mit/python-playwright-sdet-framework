@@ -9,4 +9,4 @@ from core.config import Config
 @pytest.fixture
 def sauce_creds():
     """Fixture providing SauceDemo username and password from config."""
-    return (Config.SAUCE_USERNAME, Config.SAUCE_PASSWORD)
+    return (Config.SAUCE_STANDARD_USER, Config.SAUCE_PASSWORD)

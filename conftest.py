@@ -292,7 +292,7 @@ def authenticated_page(page):
     login_page.open()
 
     login_page.login(
-        username=Config.SAUCE_USERNAME,
+        username=Config.SAUCE_STANDARD_USER,
         password=Config.SAUCE_PASSWORD,
     )
 
