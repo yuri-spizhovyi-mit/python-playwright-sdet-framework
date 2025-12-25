@@ -18,6 +18,8 @@ import re
 from datetime import datetime
 from pathlib import Path
 import pytest
+from apps.saucedemo.pages.login_page import LoginPage
+from apps.saucedemo.pages.inventory_page import InventoryPage
 
 try:
     import allure  # optional dependency
@@ -41,6 +43,7 @@ LOGS_DIR = REPORTS_DIR / "logs"
 # Helpers
 # ------------------------------------------------------------------------------
 
+
 def _safe_filename(nodeid: str) -> str:
     """Convert pytest node ID to a filesystem-safe filename."""
     name = re.sub(r"[^a-zA-Z0-9_.-]+", "_", nodeid)
@@ -55,6 +58,7 @@ def _now_stamp() -> str:
 # ------------------------------------------------------------------------------
 # CLI options
 # ------------------------------------------------------------------------------
+
 
 def pytest_addoption(parser: pytest.Parser) -> None:
     """
@@ -99,6 +103,7 @@ def pytest_addoption(parser: pytest.Parser) -> None:
 # Execution mode handling
 # ------------------------------------------------------------------------------
 
+
 def pytest_configure(config: pytest.Config) -> None:
     """
     Apply marker expressions based on custom CLI execution flags.
@@ -128,6 +133,7 @@ def pytest_configure(config: pytest.Config) -> None:
 # ------------------------------------------------------------------------------
 # Failure artifact handling
 # ------------------------------------------------------------------------------
+
 
 @pytest.hookimpl(hookwrapper=True, tryfirst=True)
 def pytest_runtest_makereport(item: pytest.Item, call: pytest.CallInfo):
@@ -207,6 +213,7 @@ def pytest_runtest_makereport(item: pytest.Item, call: pytest.CallInfo):
 # UI runtime capture (console + tracing)
 # ------------------------------------------------------------------------------
 
+
 @pytest.fixture(autouse=True)
 def ui_runtime_capture(request: pytest.FixtureRequest):
     """
@@ -272,3 +279,26 @@ def ui_runtime_capture(request: pytest.FixtureRequest):
                 context.tracing.stop()
             except Error:
                 pass
+
+
+@pytest.fixture
+def authenticated_page(page):
+    """
+    Returns a Playwright page with an authenticated SauceDemo session.
+
+    Fails fast if login does not succeed.
+    """
+    login_page = LoginPage(page)
+    login_page.open()
+
+    login_page.login(
+        username=Config.SAUCE_USERNAME,
+        password=Config.SAUCE_PASSWORD,
+    )
+
+    inventory_page = InventoryPage(page)
+
+    # Fail fast if login did not succeed
+    assert inventory_page.is_loaded(), "Login failed: inventory page not loaded"
+
+    return page

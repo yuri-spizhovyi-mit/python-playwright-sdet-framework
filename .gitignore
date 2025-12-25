@@ -39,3 +39,4 @@ reports/logs/*
 !reports/logs/.gitkeep
 
 *.log
+.vscode/settings.json

@@ -9,9 +9,7 @@ from typing import Optional
 from core.config import Config
 
 
-_LOG_FORMAT = (
-    "%(asctime)s | %(levelname)-7s | %(name)s | %(message)s"
-)
+_LOG_FORMAT = "%(asctime)s | %(levelname)-7s | %(name)s | %(message)s"
 _DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 

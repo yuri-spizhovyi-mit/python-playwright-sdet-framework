@@ -1,13 +1,26 @@
-# apps/saucedemo/pages/inventory_page.py
 from apps.saucedemo.pages.base_sauce_page import BaseSaucePage
 
 
 class InventoryPage(BaseSaucePage):
-    """Page object for the Sauce Demo Inventory page."""
+    """SauceDemo inventory screen."""
 
-    INVENTORY_CONTAINER = '[data-test="inventory-container"]'
+    INVENTORY_CONTAINER = ".inventory_list"
+    INVENTORY_ITEM = ".inventory_item"
+    PAGE_TITLE = ".title"
 
-    def assert_loaded(self):
-        self.page.wait_for_selector(
-            self.INVENTORY_CONTAINER, state="visible", timeout=10000
-        )
+    def open(self, path: str = "inventory.html"):
+        """Open the inventory page directly."""
+        super().open(path)
+        return self
+
+    def is_loaded(self) -> bool:
+        """Check that inventory page is loaded."""
+        return self.page.is_visible(self.INVENTORY_CONTAINER)
+
+    def get_title(self) -> str:
+        """Return inventory page title."""
+        return self.page.text_content(self.PAGE_TITLE) or ""
+
+    def get_items_count(self) -> int:
+        """Return number of inventory items displayed."""
+        return self.page.locator(self.INVENTORY_ITEM).count()
