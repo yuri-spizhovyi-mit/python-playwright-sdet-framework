@@ -1,20 +1,26 @@
 """
-Base page object for SauceDemo UI automation.
-Defines navigation and initialization shared by all SauceDemo page objects.
+Base page abstraction for SauceDemo application.
 """
 
+from playwright.sync_api import Page
+
+from core.base_page import BasePage
 from core.config import Config
 
 
-class BaseSaucePage:
-    """Base class for Sauce Demo page objects providing navigation convenience methods."""
+class BaseSaucePage(BasePage):
+    """Common navigation behavior for SauceDemo pages."""
 
-    def __init__(self, page):
-        """Initialize the BaseSaucePage with a Playwright page instance."""
-        self.page = page
+    def __init__(self, page: Page):
+        super().__init__(page)
 
     def open(self, path: str = ""):
-        """Open a specified path relative to the SAUCE_URL and wait for page load."""
-        url = Config.SAUCE_URL.rstrip("/") + ("/" + path.lstrip("/") if path else "")
+        """
+        Open a SauceDemo page using a relative path.
+        """
+        base_url = Config.SAUCE_URL.rstrip("/")
+        path = path.lstrip("/")
+
+        url = f"{base_url}/{path}" if path else base_url
         self.page.goto(url)
         self.page.wait_for_load_state("domcontentloaded")
