@@ -1,7 +1,7 @@
 """
 Root-level pytest configuration with failure artifacts.
 
-This file is auto-discovered by pytest (no imports needed).
+This file is auto-discovered by pytest.
 It applies to all tests in the repo, but only activates for UI tests that
 use Playwright fixtures ('page' and/or 'context').
 
@@ -25,18 +25,24 @@ except ImportError:
     allure = None  # type: ignore[assignment]
 
 from playwright.sync_api import Error
-
 from core.config import Config
 
-# Reports path (Config override if present)
-REPORTS_DIR = Path(getattr(Config, "REPORTS_DIR", "reports"))
+# ------------------------------------------------------------------------------
+# Paths
+# ------------------------------------------------------------------------------
+
+REPORTS_DIR = Path(Config.REPORTS_DIR)
 SCREENSHOTS_DIR = REPORTS_DIR / "screenshots"
 TRACES_DIR = REPORTS_DIR / "traces"
 LOGS_DIR = REPORTS_DIR / "logs"
 
 
+# ------------------------------------------------------------------------------
+# Helpers
+# ------------------------------------------------------------------------------
+
 def _safe_filename(nodeid: str) -> str:
-    """Convert pytest node ID to a safe filename."""
+    """Convert pytest node ID to a filesystem-safe filename."""
     name = re.sub(r"[^a-zA-Z0-9_.-]+", "_", nodeid)
     return name.strip("_")
 
@@ -46,8 +52,16 @@ def _now_stamp() -> str:
     return datetime.now().strftime("%Y%m%d_%H%M%S_%f")[:19]
 
 
+# ------------------------------------------------------------------------------
+# CLI options
+# ------------------------------------------------------------------------------
+
 def pytest_addoption(parser: pytest.Parser) -> None:
-    """Add custom CLI options."""
+    """
+    Register custom CLI options.
+    """
+
+    # Artifact / tracing flags
     parser.addoption(
         "--artifacts",
         action="store",
@@ -61,10 +75,7 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         help="Save Playwright trace zip on failure (true/false). Default: true",
     )
 
-def pytest_addoption(parser: pytest.Parser) -> None:
-    """
-    Register custom CLI options for test execution modes.
-    """
+    # Execution modes
     group = parser.getgroup("execution modes")
 
     group.addoption(
@@ -83,14 +94,20 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         help="Run flaky tests only",
     )
 
+
+# ------------------------------------------------------------------------------
+# Execution mode handling
+# ------------------------------------------------------------------------------
+
 def pytest_configure(config: pytest.Config) -> None:
     """
     Apply marker expressions based on custom CLI execution flags.
     """
+
     selected = [
-        config.getoption("--smoke"),
-        config.getoption("--full"),
-        config.getoption("--flaky"),
+        config.getoption("smoke"),
+        config.getoption("full"),
+        config.getoption("flaky"),
     ]
 
     if sum(bool(x) for x in selected) > 1:
@@ -98,45 +115,46 @@ def pytest_configure(config: pytest.Config) -> None:
             "Only one execution mode can be selected: --smoke, --full, or --flaky"
         )
 
-    if config.getoption("--smoke"):
+    if config.getoption("smoke"):
         config.option.markexpr = "smoke"
 
-    elif config.getoption("--full"):
+    elif config.getoption("full"):
         config.option.markexpr = "not flaky"
 
-    elif config.getoption("--flaky"):
+    elif config.getoption("flaky"):
         config.option.markexpr = "flaky"
 
+
+# ------------------------------------------------------------------------------
+# Failure artifact handling
+# ------------------------------------------------------------------------------
 
 @pytest.hookimpl(hookwrapper=True, tryfirst=True)
 def pytest_runtest_makereport(item: pytest.Item, call: pytest.CallInfo):
     """
     Capture test outcome and write artifacts on failure.
 
-    Important:
-    - Collection errors (ERROR collecting ...) will not produce artifacts
-      because the test body never ran and Playwright fixtures were not created.
+    Collection/setup errors do not produce artifacts because Playwright
+    fixtures are not created.
     """
     outcome = yield
     rep = outcome.get_result()
     setattr(item, f"rep_{rep.when}", rep)
 
-    # Only act after the actual test body
     if rep.when != "call" or not rep.failed:
         return
 
-    artifacts_enabled = item.config.getoption("--artifacts").lower() == "true"
+    artifacts_enabled = item.config.getoption("artifacts").lower() == "true"
     if not artifacts_enabled:
         return
 
-    # Only UI tests have these fixtures
     page = item.funcargs.get("page")
     context = item.funcargs.get("context")
 
     test_id = _safe_filename(item.nodeid)
     stamp = _now_stamp()
 
-    # ---- Console log (if captured) ----
+    # ---- Console log ----
     console_lines = getattr(item, "_console_lines", None)
     if console_lines:
         LOGS_DIR.mkdir(parents=True, exist_ok=True)
@@ -156,11 +174,8 @@ def pytest_runtest_makereport(item: pytest.Item, call: pytest.CallInfo):
         shot_path = SCREENSHOTS_DIR / f"{test_id}_{stamp}.png"
         try:
             page.screenshot(path=str(shot_path), full_page=True)
-            print(f"[DEBUG] Screenshot taken: {shot_path}")
-        except Error as e:
-            print(f"⚠️ Screenshot failed: {e}")
-        except Exception as e:
-            print(f"⚠️ Unexpected exception type during screenshot: {e}")
+        except Error:
+            pass
         else:
             if allure is not None:
                 allure.attach.file(
@@ -169,22 +184,15 @@ def pytest_runtest_makereport(item: pytest.Item, call: pytest.CallInfo):
                     attachment_type=allure.attachment_type.PNG,
                 )
 
-    # ---- Trace zip ----
-    trace_enabled = item.config.getoption("--trace-on-failure").lower() == "true"
-    print(
-        f"[DEBUG] trace_enabled={trace_enabled}, context_present={context is not None}"
-    )
+    # ---- Trace ----
+    trace_enabled = item.config.getoption("trace_on_failure").lower() == "true"
     if trace_enabled and context is not None:
         TRACES_DIR.mkdir(parents=True, exist_ok=True)
         trace_path = TRACES_DIR / f"{test_id}_{stamp}.zip"
         try:
-            # Works only if tracing was started in the autouse fixture below.
             context.tracing.stop(path=str(trace_path))
-            print(f"[DEBUG] tracing stopped and saved to: {trace_path}")
-        except Error as e:
-            print(f"⚠️ Trace save failed (trace may not have started): {e}")
-        except Exception as e:
-            print(f"⚠️ Unexpected exception type during trace save: {e}")
+        except Error:
+            pass
         else:
             if allure is not None:
                 allure.attach.file(
@@ -195,26 +203,29 @@ def pytest_runtest_makereport(item: pytest.Item, call: pytest.CallInfo):
                 )
 
 
+# ------------------------------------------------------------------------------
+# UI runtime capture (console + tracing)
+# ------------------------------------------------------------------------------
+
 @pytest.fixture(autouse=True)
 def ui_runtime_capture(request: pytest.FixtureRequest):
     """
-    Autouse fixture that activates only for UI tests (Playwright page/context).
+    Autouse fixture activated only for UI tests (Playwright page/context).
 
     Responsibilities:
-    - Capture browser console + page errors into item._console_lines
-    - Start Playwright tracing at test start (if enabled)
-    - Stop tracing without saving on success
-      (On failure, saving happens in pytest_runtest_makereport)
+    - Capture browser console + page errors
+    - Start tracing at test start (if enabled)
+    - Stop tracing on success (failure saving handled elsewhere)
     """
+
     is_ui_test = "page" in request.fixturenames or "context" in request.fixturenames
     if not is_ui_test:
         yield
         return
 
-    artifacts_enabled = request.config.getoption("--artifacts").lower() == "true"
-    trace_enabled = request.config.getoption("--trace-on-failure").lower() == "true"
+    artifacts_enabled = request.config.getoption("artifacts").lower() == "true"
+    trace_enabled = request.config.getoption("trace_on_failure").lower() == "true"
 
-    # Lazily resolve fixtures
     page = request.getfixturevalue("page") if "page" in request.fixturenames else None
     context = (
         request.getfixturevalue("context")
@@ -222,27 +233,19 @@ def ui_runtime_capture(request: pytest.FixtureRequest):
         else None
     )
 
-    # Ensure dirs exist (harmless even if test passes)
     if artifacts_enabled:
         SCREENSHOTS_DIR.mkdir(parents=True, exist_ok=True)
         TRACES_DIR.mkdir(parents=True, exist_ok=True)
         LOGS_DIR.mkdir(parents=True, exist_ok=True)
 
-    # --- Console / page error capture ---
+    # ---- Console capture ----
     console_lines: list[str] = []
     request.node._console_lines = console_lines  # type: ignore[attr-defined]
 
     if page is not None:
 
         def on_console(msg):
-            try:
-                console_lines.append(f"[console.{msg.type}] {msg.text}")
-            except AttributeError as ae:
-                print(f"[DEBUG] AttributeError in console handler: {ae}")
-                console_lines.append("[console] <unreadable message>")
-            except Exception as e:
-                print(f"[DEBUG] Unexpected exception in console handler: {e}")
-                console_lines.append("[console] <unreadable message>")
+            console_lines.append(f"[console.{msg.type}] {msg.text}")
 
         def on_page_error(err):
             console_lines.append(f"[pageerror] {err}")
@@ -250,31 +253,22 @@ def ui_runtime_capture(request: pytest.FixtureRequest):
         page.on("console", on_console)
         page.on("pageerror", on_page_error)
 
-    # --- Start tracing (save only on failure) ---
+    # ---- Tracing ----
     tracing_started = False
-    print(
-        f"[DEBUG] artifacts_enabled={artifacts_enabled}, trace_enabled={trace_enabled}, context_present={context is not None}"
-    )
     if artifacts_enabled and trace_enabled and context is not None:
         try:
             context.tracing.start(screenshots=True, snapshots=True, sources=True)
-            print(f"[DEBUG] tracing started on context: {context}")
             tracing_started = True
-        except Error as e:
-            print(f"⚠️ Trace start failed: {e}")
-        except Exception as e:
-            print(f"⚠️ Unexpected exception type during trace start: {e}")
+        except Error:
+            pass
 
-    yield  # run the test
+    yield
 
-    # On success, stop trace without saving (failure saving happens in makereport)
+    # Stop trace on success (do not save)
     if tracing_started and context is not None:
         rep = getattr(request.node, "rep_call", None)
         if rep is not None and not rep.failed:
             try:
                 context.tracing.stop()
-                print(f"[DEBUG] tracing stopped successfully on success.")
-            except Error as e:
-                print(f"⚠️ Trace stop failed on success: {e}")
-            except Exception as e:
-                print(f"⚠️ Unexpected exception type during trace stop on success: {e}")
+            except Error:
+                pass
