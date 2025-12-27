@@ -4,7 +4,6 @@ Tabs page object for DemoQA application.
 
 from playwright.sync_api import Page, expect
 from apps.demoqa.pages.base_demoqa_page import BaseDemoQAPage
-import re
 
 
 class TabsPage(BaseDemoQAPage):
@@ -40,12 +39,15 @@ class TabsPage(BaseDemoQAPage):
     # ---------- Actions ----------
 
     def open_what(self) -> None:
+        """Open what tab"""
         self._open_tab(self.TAB_WHAT)
 
     def open_origin(self) -> None:
+        """Open Origin tab"""
         self._open_tab(self.TAB_ORIGIN)
 
     def open_use(self) -> None:
+        """Open Use tab"""
         self._open_tab(self.TAB_USE)
 
     def _open_tab(self, selector: str) -> None:
