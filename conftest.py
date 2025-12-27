@@ -28,6 +28,7 @@ except ImportError:
 
 from playwright.sync_api import Error
 from core.config import Config
+from playwright.sync_api import BrowserContext
 
 # ------------------------------------------------------------------------------
 # Paths
@@ -207,6 +208,39 @@ def pytest_runtest_makereport(item: pytest.Item, call: pytest.CallInfo):
                     attachment_type=allure.attachment_type.TEXT,
                     extension="zip",
                 )
+
+
+# ------------------------------------------------------------------------------
+# Browser context with ad blocking
+# ------------------------------------------------------------------------------
+
+
+@pytest.fixture
+def context(browser):
+    """
+    Create a browser context with ad blocking enabled.
+    """
+    context = browser.new_context(**Config.get_browser_context_options())
+
+    # Block ad domains
+    def block_ads(route):
+        ad_domains = [
+            "googleadservices.com",
+            "googlesyndication.com",
+            "doubleclick.net",
+            "google_vignette",
+            "adservice",
+            "advertising",
+        ]
+        if any(domain in route.request.url for domain in ad_domains):
+            route.abort()
+        else:
+            route.continue_()
+
+    context.route("**/*", block_ads)
+
+    yield context
+    context.close()
 
 
 # ------------------------------------------------------------------------------
