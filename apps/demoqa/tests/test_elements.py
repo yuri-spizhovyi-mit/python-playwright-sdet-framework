@@ -18,6 +18,7 @@ from apps.demoqa.pages.text_box_page import TextBoxPage
 
 
 @pytest.mark.smoke
+@pytest.mark.full
 def test_elements_page_loads(page):
     """
     Verify that the Elements landing page opens successfully.
