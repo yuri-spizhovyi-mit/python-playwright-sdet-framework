@@ -46,18 +46,33 @@ class TextBoxPage(BaseDemoQAPage):
     # ---------- Actions ----------
 
     def fill_full_name(self, value: str) -> None:
+        """
+        Fill the Full Name input field with the provided value.
+        """
         self.page.fill(self.FULL_NAME_INPUT, value)
 
     def fill_email(self, value: str) -> None:
+        """
+        Fill the email input field with the provided value.
+        """
         self.page.fill(self.EMAIL_INPUT, value)
 
     def fill_current_address(self, value: str) -> None:
+        """
+        Fill the current address input field with the provided value.
+        """
         self.page.fill(self.CURRENT_ADDRESS_INPUT, value)
 
     def fill_permanent_address(self, value: str) -> None:
+        """
+        Fill the permanent address input field with the provided value.
+        """
         self.page.fill(self.PERMANENT_ADDRESS_INPUT, value)
 
     def submit(self) -> None:
+        """
+        Click Submit button.
+        """
         self.page.click(self.SUBMIT_BUTTON)
 
     def submit_form(
