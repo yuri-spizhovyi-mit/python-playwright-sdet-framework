@@ -19,10 +19,6 @@ class ElementsPage(BaseDemoQAPage):
     CHECK_BOX = "Check Box"
     RADIO_BUTTON = "Radio Button"
 
-    def open_page(self):
-        self.open(self.URL_PATH)
-        return self
-
     def is_loaded(self) -> bool:
         """Return True when Elements section shell is visible."""
         return self.page.is_visible(self.PAGE_READY)

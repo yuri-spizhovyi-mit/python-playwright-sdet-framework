@@ -37,11 +37,6 @@ class WidgetsPage(BaseDemoQAPage):
     MENU = "Menu"
     SELECT_MENU = "Select Menu"
 
-    def open_page(self) -> Self:
-        """Open Widget page"""
-        self.open(self.URL_PATH)
-        return self
-
     # ---------- Readiness ----------
 
     def is_loaded(self) -> bool:
