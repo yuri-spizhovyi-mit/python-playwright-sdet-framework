@@ -23,7 +23,7 @@ def test_radio_button_page_opens_from_elements_menu(page):
 
 
 @pytest.mark.smoke
-def test_select_yes_radio_button(page):
+def test_select_yes_radio_button(page, radio_values):
     """
     Verify selecting 'Yes' radio button.
     """
@@ -32,11 +32,11 @@ def test_select_yes_radio_button(page):
 
     radio_page.select_yes()
 
-    assert radio_page.selected_value() == "Yes"
+    assert radio_page.selected_value() == radio_values["yes"]
 
 
 @pytest.mark.smoke
-def test_select_impressive_radio_button(page):
+def test_select_impressive_radio_button(page, radio_values):
     """
     Verify selecting 'Impressive' radio button.
     """
@@ -45,11 +45,11 @@ def test_select_impressive_radio_button(page):
 
     radio_page.select_impressive()
 
-    assert radio_page.selected_value() == "Impressive"
+    assert radio_page.selected_value() == radio_values["impressive"]
 
 
 @pytest.mark.smoke
-def test_no_radio_button_is_disabled(page):
+def test_no_radio_button_is_disabled(page, radio_values):
     """
     Verify 'No' radio button cannot be selected.
     """
@@ -57,9 +57,9 @@ def test_no_radio_button_is_disabled(page):
     radio_page = RadioButtonPage(page)
 
     radio_page.select_yes()
-    assert radio_page.selected_value() == "Yes"
+    assert radio_page.selected_value() == radio_values["yes"]
 
     radio_page.select_no()
 
     # Value must remain unchanged
-    assert radio_page.selected_value() == "Yes"
+    assert radio_page.selected_value() == radio_values["yes"]

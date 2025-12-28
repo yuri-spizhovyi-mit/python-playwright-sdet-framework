@@ -42,7 +42,6 @@ def test_revertable_draggable_returns_to_origin(page):
     """
     Verify revertable draggable returns to its original position.
     """
-
     droppable = DroppablePage(page).open_page().open_revert_tab()
     # Capture initial position
     before_x = droppable.page.locator(droppable.REVERT_DRAGGABLE).bounding_box()["x"]

@@ -14,7 +14,7 @@ def test_sortable_page_opens(page):
 
 
 @pytest.mark.full
-def test_sortable_list_reorder(page):
+def test_sortable_list_reorder(page, sortable_reorder_indexes):
     """
     Verify list items can be reordered.
     """
@@ -24,7 +24,9 @@ def test_sortable_list_reorder(page):
     before = sortable.list_items_text()
 
     # Drag first item to position 3
-    sortable.drag_list_item(0, 3)
+    from_index = sortable_reorder_indexes["from"]
+    to_index = sortable_reorder_indexes["to"]
+    sortable.drag_list_item(from_index, to_index)
 
     after = sortable.list_items_text()
 

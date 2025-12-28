@@ -23,14 +23,14 @@ def test_slider_page_opens_from_widgets_menu(page):
 
 
 @pytest.mark.smoke
-@pytest.mark.parametrize("value", [0, 25, 50, 75, 100])
-def test_set_slider_value(page, value):
+def test_set_slider_value(page, slider_values):
     """
     Verify slider can be set to specific values.
     """
     WidgetsPage(page).open_page().open_slider()
     slider_page = SliderPage(page)
 
-    slider_page.set_value(value)
+    for value in slider_values:
+        slider_page.set_value(value)
 
-    assert slider_page.current_value() == value
+        assert slider_page.current_value() == value

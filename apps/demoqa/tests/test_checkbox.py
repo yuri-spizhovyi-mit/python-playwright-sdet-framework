@@ -23,38 +23,33 @@ def test_checkbox_page_opens_from_elements_menu(page):
 
 
 @pytest.mark.smoke
-def test_select_single_checkbox_item(page):
+def test_select_single_checkbox_item(page, checkbox_items):
     """
     Verify that selecting a single checkbox item works.
     """
-    elements_page = ElementsPage(page).open_page()
-    elements_page.open_check_box()
-
+    ElementsPage(page).open_page().open_check_box()
     checkbox_page = CheckBoxPage(page)
     checkbox_page.expand_all()
 
-    checkbox_page.select("Desktop")
+    checkbox_page.select(checkbox_items["single"])
 
-    selected = checkbox_page.selected_items()
-
-    assert "desktop" in [item.lower() for item in selected]
+    selected = [item.lower() for item in checkbox_page.selected_items()]
+    assert checkbox_items["single"].lower() in selected
 
 
 @pytest.mark.smoke
-def test_select_multiple_checkbox_items(page):
+def test_select_multiple_checkbox_items(page, checkbox_items):
     """
     Verify that multiple checkbox selections are reflected correctly.
     """
-    elements_page = ElementsPage(page).open_page()
-    elements_page.open_check_box()
-
+    ElementsPage(page).open_page().open_check_box()
     checkbox_page = CheckBoxPage(page)
     checkbox_page.expand_all()
 
-    checkbox_page.select("Documents")
-    checkbox_page.select("Downloads")
+    for item in checkbox_items["multiple"]:
+        checkbox_page.select(item)
 
     selected = [item.lower() for item in checkbox_page.selected_items()]
 
-    assert "documents" in selected
-    assert "downloads" in selected
+    for item in checkbox_items["multiple"]:
+        assert item.lower() in selected

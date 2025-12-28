@@ -20,27 +20,28 @@ def test_date_picker_page_opens_from_widgets_menu(page):
 
 
 @pytest.mark.smoke
-def test_set_date(page):
+def test_set_date(page, date_picker_values):
     """
     Verify that a date can be set in the Date Picker.
     """
     WidgetsPage(page).open_page().open_date_picker()
     date_picker = DatePickerPage(page)
 
-    date_picker.set_date("12/25/2025")
+    date_value = date_picker_values["date"]
+    date_picker.set_date(date_value)
 
-    assert date_picker.date_value() == "12/25/2025"
+    assert date_picker.date_value() == date_value
 
 
 @pytest.mark.smoke
-def test_set_date_and_time(page):
+def test_set_date_and_time(page, date_picker_values):
     """
     Verify that date and time can be set.
     """
     WidgetsPage(page).open_page().open_date_picker()
     date_picker = DatePickerPage(page)
 
-    value = "December 25, 2025 10:30 AM"
-    date_picker.set_date_time(value)
+    date_time_value = date_picker_values["date_time"]
+    date_picker.set_date_time(date_time_value)
 
-    assert date_picker.date_time_value() == value
+    assert date_picker.date_time_value() == date_time_value

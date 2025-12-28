@@ -43,25 +43,15 @@ def test_text_box_page_opens_from_elements_menu(page):
 
 
 @pytest.mark.smoke
-def test_text_box_form_submission(page):
+def test_text_box_form_submission(page, text_box_form_data):
     """
     Verify that Text Box form can be submitted and output is displayed.
     """
-    elements_page = ElementsPage(page).open_page()
-    elements_page.open_text_box()
-
+    ElementsPage(page).open_page().open_text_box()
     text_box_page = TextBoxPage(page)
-
-    text_box_page.submit_form(
-        full_name="John Doe",
-        email="john@doe.com",
-        current_address="123 Main St",
-        permanent_address="456 Oak Ave",
-    )
-
+    text_box_page.submit_form(**text_box_form_data)
     output = text_box_page.output_text()
-
-    assert "John Doe" in output
-    assert "john@doe.com" in output
-    assert "123 Main St" in output
-    assert "456 Oak Ave" in output
+    assert text_box_form_data["full_name"] in output
+    assert text_box_form_data["email"] in output
+    assert text_box_form_data["current_address"] in output
+    assert text_box_form_data["permanent_address"] in output

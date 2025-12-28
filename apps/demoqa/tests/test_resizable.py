@@ -14,7 +14,7 @@ def test_resizable_page_opens(page):
 
 
 @pytest.mark.full
-def test_restricted_box_resizes(page):
+def test_restricted_box_resizes(page, resize_offsets):
     """
     Verify restricted resizable box can be resized within limits.
     """
@@ -23,7 +23,8 @@ def test_restricted_box_resizes(page):
 
     before = resizable.box_size()
 
-    resizable.resize_restricted_box(50, 50)
+    dx, dy = resize_offsets["restricted"]
+    resizable.resize_restricted_box(dx, dy)
 
     after = resizable.box_size()
 
@@ -32,7 +33,7 @@ def test_restricted_box_resizes(page):
 
 
 @pytest.mark.full
-def test_free_box_resizes(page):
+def test_free_box_resizes(page, resize_offsets):
     """
     Verify free resizable box can be resized.
     """
@@ -41,7 +42,8 @@ def test_free_box_resizes(page):
 
     before = resizable.free_box_size()
 
-    resizable.resize_free_box(100, 80)
+    dx, dy = resize_offsets["free"]
+    resizable.resize_free_box(dx, dy)
 
     after = resizable.free_box_size()
 

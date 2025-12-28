@@ -3,9 +3,10 @@ from apps.demoqa.pages.dragabble_page import DragabblePage
 
 
 @pytest.mark.smoke
-def test_simple_drag(page):
+def test_simple_drag(page, drag_offsets):
     dragabble = DragabblePage(page).open_page().open_simple_tab()
-    dragabble.drag_simple(100, 50)
+    dx, dy = drag_offsets["medium"]
+    dragabble.drag_simple(dx, dy)
 
 
 def test_axis_restricted_drag(page):

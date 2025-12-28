@@ -14,14 +14,14 @@ def test_selectable_page_opens(page):
 
 
 @pytest.mark.full
-def test_single_item_selection(page):
+def test_single_item_selection(page, selectable_indexes):
     """
     Verify single list item selection.
     """
     InteractionsPage(page).open_page().open_selectable()
     selectable = SelectablePage(page)
 
-    selectable.select_list_item(1)
+    selectable.select_list_item(selectable_indexes["single"])
 
     selected = selectable.selected_list_items()
     assert selected == ["Dapibus ac facilisis in"]
