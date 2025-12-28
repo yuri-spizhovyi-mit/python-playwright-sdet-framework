@@ -1,146 +1,266 @@
 # python-playwright-sdet-framework
 
-[![CI](https://github.com/yuri-spizhovyi-mit/python-playwright-sdet-framework/actions/workflows/test_suite.yml/badge.svg)](https://github.com/yuri-spizhovyi-mit/python-playwright-sdet-framework/actions)
+[![Python](https://img.shields.io/badge/python-3.12-blue)](https://www.python.org/)
+[![Playwright](https://img.shields.io/badge/playwright-python-green)](https://playwright.dev/python/)
+[![Pytest](https://img.shields.io/badge/pytest-framework-orange)](https://docs.pytest.org/)
 [![Allure Report](https://img.shields.io/badge/Allure-Live_Report-blue)](https://yuri-spizhovyi-mit.github.io/python-playwright-sdet-framework/)
-[![Python](https://img.shields.io/badge/Python-3.12-blue)](https://www.python.org/)
-[![Playwright](https://img.shields.io/badge/Playwright-Python-green)](https://playwright.dev/python/)
-
-Portfolio-grade **Python + Playwright** SDET framework demonstrating scalable UI and API testing with clean architecture, deterministic execution, and production-style CI reporting.
-
-This repository is designed to reflect **real-world SDET practices** rather than toy examples.
 
 ---
 
-## Key characteristics
+## Live Test Report
 
-- Deterministic UI automation using **Playwright (sync API)**
-- Page Object Model with clear responsibility boundaries
-- Centralized **pytest fixtures** and reusable test data
-- Stable execution in both **headed and headless CI**
-- **Allure reporting**, published automatically via GitHub Pages
-- CI-first design with reproducible and observable test runs
+**Allure Report (GitHub Pages):**  
+[View live Allure report (GitHub Pages)](https://yuri-spizhovyi-mit.github.io/python-playwright-sdet-framework/)
 
----
-
-## Live test report (CI)
-
-The latest CI execution report is publicly available:
-
-https://yuri-spizhovyi-mit.github.io/python-playwright-sdet-framework/
-
-The report is generated automatically by GitHub Actions and includes:
-
-- test results and durations
-- suite and feature breakdowns
-- browser and execution metadata
-- historical execution data (when applicable)
-
-No local setup is required to view results.
+The report is automatically generated and published by GitHub Actions after each CI run.  
+It allows reviewers to inspect test results, execution history, and failures without running the project locally.
 
 ---
 
-## Project structure
+## Project Purpose
+
+This repository demonstrates a **portfolio-grade SDET automation framework** built with Python and Playwright.
+
+The goal of the project is to showcase:
+
+- Clean and scalable test architecture
+- Production-style UI automation practices
+- CI/CD-ready reporting and artifacts
+- Maintainability, observability, and debuggability of tests
+
+This is not a demo or tutorial repository.  
+The structure and decisions reflect how automation frameworks are typically designed and maintained in large engineering organizations.
+
+---
+
+## Technology Stack
+
+- **Language:** Python 3.12
+- **UI Automation:** Playwright (Python)
+- **Test Runner:** Pytest
+- **Reporting:** Allure
+- **CI/CD:** GitHub Actions
+- **Design Patterns:** Page Object Model (POM), Fixture-based setup
+- **Target Applications:**
+  - DemoQA (UI components & interactions)
+  - SauceDemo (sample e-commerce UI)
+
+---
+
+## High-Level Architecture
+
+Key architectural principles:
+
+- Clear separation between **test logic** and **page behavior**
+- Centralized **browser lifecycle management**
+- Reusable **pytest fixtures** for environment setup
+- Explicit waits and state-based assertions (no hard sleeps)
+- CI-first mindset (headless by default, artifacts on failure)
+
+---
+
+## Project Structure
 
 ```text
 python-playwright-sdet-framework/
-  core/                      # framework core (base page, config, api client)
-  apps/
-    saucedemo/
-      pages/                 # page objects
-      tests/                 # UI tests
-    demoqa/
-      pages/
-      tests/
-  api/
-    reqres/
-      schemas/               # JSON schemas for contract validation
-      tests/                 # API tests
-  reports/
-    screenshots/             # failure screenshots
-    traces/                  # optional Playwright traces
-    allure-results/          # raw Allure results
-  .github/workflows/         # GitHub Actions CI
-  conftest.py                # global pytest fixtures
-  pytest.ini                 # pytest configuration
-  requirements.txt
-  .env.example
-  README.md
+│
+├── core/
+│   ├── browser.py              # Browser & context management
+│   ├── config.py               # Runtime configuration
+│   ├── base_page.py            # Base page abstraction
+│   ├── api_client.py           # API client foundation
+│   └── logger.py               # Logging utilities
+│
+├── apps/
+│   ├── demoqa/
+│   │   ├── pages/              # Page Objects
+│   │   └── tests/              # UI tests
+│   │
+│   └── saucedemo/
+│       ├── pages/
+│       └── tests/
+│
+├── api/
+│   └── reqres/
+│       ├── schemas/            # JSON schemas
+│       └── tests/              # API tests
+│
+├── utils/
+│   ├── data_generators.py
+│   └── helpers.py
+│
+├── reports/
+│   ├── screenshots/            # Failure screenshots
+│   ├── traces/                 # Playwright traces (optional)
+│   └── allure-results/         # Raw Allure results
+│
+├── .github/
+│   └── workflows/
+│       └── test_suite.yml      # CI pipeline
+│
+├── conftest.py                 # Global pytest fixtures
+├── pytest.ini                  # Pytest configuration
+├── requirements.txt
+├── .env.example
+└── README.md
 ```
 
 ---
 
-## Test execution
+## Test Coverage Overview
 
-### Local run (headed)
+### UI Tests (DemoQA)
 
-```bash
-pytest -m smoke -v
-```
+- Elements
+  - Text Box
+  - Check Box
+  - Radio Button
+- Widgets
+  - Date Picker
+  - Slider
+  - Tabs
+  - Progress Bar
+- Interactions
+  - Drag & Drop
+  - Droppable
+  - Sortable
+  - Selectable
+  - Resizable
 
-### Local run (headless)
+### UI Tests (SauceDemo)
 
-```bash
-HEADLESS=true pytest -m smoke -v
-```
-
-### CI run
-
-Tests are executed automatically by GitHub Actions:
-
-- on every push to `main`
-- on pull requests
-- on a scheduled nightly run
+- Login flow
+- Inventory page smoke validation
 
 ---
 
-## CI scheduling (nightly execution)
+## Pytest Configuration
 
-In addition to push and pull request triggers, the framework is configured to run **automatically every night** via GitHub Actions.
+Markers used in the project:
+
+- `@pytest.mark.smoke` – fast, critical-path tests (CI default)
+- `@pytest.mark.full` – extended UI coverage
+
+Example:
+
+```bash
+pytest -m smoke
+pytest -m full
+```
+
+---
+
+## Fixtures Strategy
+
+Fixtures are centralized in `conftest.py` and include:
+
+- Browser and context lifecycle
+- Page initialization
+- Base URL validation
+- Faker session data
+- Headless / headed control via environment variables
 
 This ensures:
 
-- early detection of flaky behavior
-- continuous validation against third-party demo applications
-- historical stability tracking in Allure
+- No duplicated setup code
+- Predictable test execution
+- Easy extension for parallelization or multiple environments
 
-Example schedule configuration:
+---
+
+## Debugging & Failure Analysis
+
+### Automatic Artifacts
+
+On test failure, the framework captures:
+
+- Screenshot of the failure state
+- Console logs
+- Allure step-level information
+
+Artifacts are uploaded to GitHub Actions and attached to the Allure report.
+
+### Playwright Traces (Optional)
+
+Tracing can be enabled when deeper debugging is required.
+
+```bash
+pytest --trace-on-failure=true
+playwright show-trace reports/traces/<trace>.zip
+```
+
+Tracing is disabled by default to keep CI fast and storage usage minimal.
+
+---
+
+## Continuous Integration
+
+### GitHub Actions
+
+The CI pipeline:
+
+- Runs on every push and pull request
+- Executes smoke tests in headless Chromium
+- Generates Allure results
+- Publishes Allure report to GitHub Pages
+- Uploads artifacts on failure
+
+### Optional Nightly Run
+
+The workflow can be extended with a scheduled trigger:
 
 ```yaml
 schedule:
-  - cron: "0 2 * * *" # nightly run at 02:00 UTC
+  - cron: "0 2 * * *"
 ```
 
----
-
-## Debugging failed tests
-
-### Automatic artifacts
-
-On test failure, the framework automatically captures:
-
-- Screenshot (visual state at failure moment)
-- Allure attachments (failure context in the report)
-- Optional Playwright trace (disabled by default)
-
-These artifacts are available:
-
-- in GitHub Actions run artifacts
-- inside the Allure report for failed tests
+This enables unattended nightly validation.
 
 ---
 
-## Playwright traces (optional)
+## Allure Reporting
 
-Tracing is disabled by default to keep CI fast and lightweight.
+Allure provides:
 
-When enabled, traces provide:
+- Suite-level and test-level visibility
+- Execution history
+- Duration analytics
+- Attachments and logs
+- Environment metadata
 
-- DOM snapshots
-- network activity
-- step-by-step replay in Playwright Inspector
+The live report is publicly accessible and requires no local setup.
 
-Example usage:
+---
+
+## Environment Configuration
+
+Runtime configuration is controlled via environment variables:
+
+- `HEADLESS=true|false`
+- `BROWSER=chromium|firefox|webkit`
+- `BASE_URL=<target url>`
+
+An example file is provided: `.env.example`
+
+---
+
+## How to Run Locally
 
 ```bash
-playwright show-trace reports/traces/<trace-file>.zip
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+playwright install chromium
+pytest -m smoke --headed
 ```
+
+---
+
+## What This Project Demonstrates
+
+- Senior-level test architecture decisions
+- Maintainable Page Object design
+- CI-ready automation with reporting
+- Clear separation of concerns
+- Focus on stability, not flakiness
