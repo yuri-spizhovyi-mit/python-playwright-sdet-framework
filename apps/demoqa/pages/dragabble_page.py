@@ -33,6 +33,13 @@ class DragabblePage(BaseDemoQAPage):
         "#draggableExample-tabpane-containerRestriction "
         "#containmentWrapper div.draggable"
     )
+    # ---------- Cursor Style Tab ----------
+    CURSOR_TAB = "#draggableExample-tab-cursorStyle"
+    CURSOR_PANE = "#draggableExample-tabpane-cursorStyle"
+
+    CURSOR_CENTER = "#draggableExample-tabpane-cursorStyle #cursorCenter"
+    CURSOR_TOP_LEFT = "#draggableExample-tabpane-cursorStyle #cursorTopLeft"
+    CURSOR_BOTTOM = "#draggableExample-tabpane-cursorStyle #cursorBottom"
 
     # ---------- Public API ----------
 
@@ -124,6 +131,20 @@ class DragabblePage(BaseDemoQAPage):
         """
         self._drag(self.CONTAINER_DRAGGABLE, dx, dy)
 
+    def open_cursor_tab(self):
+        self.page.locator(self.CURSOR_TAB).click()
+        expect(self.page.locator(self.CURSOR_PANE)).to_be_visible()
+        return self
+
+    def drag_cursor_center(self, dx: int, dy: int):
+        self._drag(self.CURSOR_CENTER, dx, dy)
+
+    def drag_cursor_top_left(self, dx: int, dy: int):
+        self._drag(self.CURSOR_TOP_LEFT, dx, dy)
+
+    def drag_cursor_bottom(self, dx: int, dy: int):
+        self._drag(self.CURSOR_BOTTOM, dx, dy)
+
     # ---------- Helpers ----------
 
     def _drag(self, selector: str, dx: int, dy: int):
@@ -136,6 +157,7 @@ class DragabblePage(BaseDemoQAPage):
             dy: Vertical offset in pixels.
         """
         el = self.page.locator(selector)
+        el.scroll_into_view_if_needed()
         box = el.bounding_box()
         assert box, "Draggable bounding box not found"
 

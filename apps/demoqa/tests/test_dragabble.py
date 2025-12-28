@@ -28,3 +28,15 @@ def test_container_restricted_drag(page):
     assert dy >= cy
     assert dx + dw <= cx + cw
     assert dy + dh <= cy + ch
+
+
+def test_cursor_style_drag(page):
+    """
+    Verify draggable elements move correctly under different cursor styles.
+    This is a resilience test, not a visual test.
+    """
+    dragabble = DragabblePage(page).open_page().open_cursor_tab()
+
+    dragabble.drag_cursor_center(80, 40)
+    dragabble.drag_cursor_top_left(60, 30)
+    dragabble.drag_cursor_bottom(50, 25)
