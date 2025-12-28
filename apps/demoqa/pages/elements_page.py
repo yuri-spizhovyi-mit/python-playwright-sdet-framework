@@ -20,8 +20,13 @@ class ElementsPage(BaseDemoQAPage):
     RADIO_BUTTON = "Radio Button"
 
     def is_loaded(self) -> bool:
-        """Return True when Elements section shell is visible."""
-        return self.page.is_visible(self.PAGE_READY)
+        """
+        Return True when Elements section shell and side menu are visible.
+        """
+        panel_visible = self.page.is_visible(self.PAGE_READY)
+        menu_visible = self.page.locator(self.SIDE_MENU_ITEMS).first.is_visible()
+
+        return panel_visible and menu_visible
 
     def open_text_box(self):
         """Open Text Box page from Elements menu."""
@@ -40,4 +45,9 @@ class ElementsPage(BaseDemoQAPage):
 
     def _open_menu_item(self, name: str):
         """Internal helper to open a side menu item."""
-        self.page.locator(self.SIDE_MENU_ITEMS).filter(has_text=name).click()
+        menu_items = self.page.locator(self.SIDE_MENU_ITEMS)
+
+        # Ensure side menu is fully rendered and interactable
+        menu_items.first.wait_for(state="visible")
+
+        menu_items.filter(has_text=name).first.click()
