@@ -77,8 +77,8 @@ python-playwright-sdet-framework/
 │   │   └── tests/              # UI tests
 │   │
 │   └── saucedemo/
-│       ├── pages/
-│       └── tests/
+│   │   ├── pages/              # Page Objects
+│   │   └── tests/              # UI tests
 │
 ├── api/
 │   └── reqres/
@@ -259,7 +259,7 @@ pytest -m smoke --headed
 
 ## What This Project Demonstrates
 
-- Senior-level test architecture decisions
+- Scalable test architecture
 - Maintainable Page Object design
 - CI-ready automation with reporting
 - Clear separation of concerns
