@@ -31,11 +31,10 @@ class DroppablePage(BaseDemoQAPage):
     def __init__(self, page: Page):
         super().__init__(page)
         self._assert_page_ready()
-        
+
     # ---------- Tabs ----------
     SIMPLE_TAB = "#droppableExample-tab-simple"
     SIMPLE_TAB_PANE = "#droppableExample-tabpane-simple"
-
 
     # ---------- Readiness ----------
 
