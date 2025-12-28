@@ -16,4 +16,15 @@ def test_axis_restricted_drag(page):
 
 def test_container_restricted_drag(page):
     dragabble = DragabblePage(page).open_page().open_container_tab()
-    dragabble.drag_inside_container(60, 60)
+
+    # Act
+    dragabble.drag_inside_container(200, 200)
+
+    # Assert: draggable stays within container bounds
+    cx, cy, cw, ch = dragabble.container_bounds()
+    dx, dy, dw, dh = dragabble.draggable_bounds()
+
+    assert dx >= cx
+    assert dy >= cy
+    assert dx + dw <= cx + cw
+    assert dy + dh <= cy + ch

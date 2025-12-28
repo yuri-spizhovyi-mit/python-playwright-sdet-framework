@@ -156,3 +156,19 @@ class DragabblePage(BaseDemoQAPage):
         Verify that the page is loaded and ready by checking the page header.
         """
         expect(self.page.locator(self.PAGE_HEADER)).to_be_visible()
+
+    def container_bounds(self) -> tuple[float, float, float, float]:
+        """
+        Returns (x, y, width, height) of the container restriction area.
+        """
+        box = self.page.locator(self.CONTAINER_PANE).bounding_box()
+        assert box, "Container bounding box not found"
+        return box["x"], box["y"], box["width"], box["height"]
+
+    def draggable_bounds(self) -> tuple[float, float, float, float]:
+        """
+        Returns (x, y, width, height) of the container-restricted draggable.
+        """
+        box = self.page.locator(self.CONTAINER_DRAGGABLE).bounding_box()
+        assert box, "Draggable bounding box not found"
+        return box["x"], box["y"], box["width"], box["height"]
