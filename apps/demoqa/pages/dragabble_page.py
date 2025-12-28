@@ -1,5 +1,8 @@
+"""
+Draggable interaction page for DemoQA application.
+"""
+
 from playwright.sync_api import expect
-from typing import Tuple
 from apps.demoqa.pages.base_demoqa_page import BaseDemoQAPage
 
 
@@ -34,21 +37,45 @@ class DragabblePage(BaseDemoQAPage):
     # ---------- Public API ----------
 
     def open_page(self):
+        """
+        Open the Dragabble page and verify it's ready.
+
+        Returns:
+            DragabblePage: Self for method chaining.
+        """
         self.open(self.URL_PATH)
         self._assert_page_ready()
         return self
 
     def open_simple_tab(self):
+        """
+        Open the Simple tab and verify it's visible.
+
+        Returns:
+            DragabblePage: Self for method chaining.
+        """
         self.page.locator(self.SIMPLE_TAB).click()
         expect(self.page.locator(self.SIMPLE_PANE)).to_be_visible()
         return self
 
     def open_axis_tab(self):
+        """
+        Open the Axis Restricted tab and verify it's visible.
+
+        Returns:
+            DragabblePage: Self for method chaining.
+        """
         self.page.locator(self.AXIS_TAB).click()
         expect(self.page.locator(self.AXIS_PANE)).to_be_visible()
         return self
 
     def open_container_tab(self):
+        """
+        Open the Container Restricted tab and verify it's visible.
+
+        Returns:
+            DragabblePage: Self for method chaining.
+        """
         self.page.locator(self.CONTAINER_TAB).click()
         expect(self.page.locator(self.CONTAINER_PANE)).to_be_visible()
 
@@ -60,20 +87,54 @@ class DragabblePage(BaseDemoQAPage):
     # ---------- Actions ----------
 
     def drag_simple(self, dx: int, dy: int):
+        """
+        Drag the simple draggable element by the specified offset.
+
+        Args:
+            dx: Horizontal offset in pixels.
+            dy: Vertical offset in pixels.
+        """
         self._drag(self.SIMPLE_DRAGGABLE, dx, dy)
 
     def drag_x_only(self, dx: int):
+        """
+        Drag the X-axis restricted draggable element horizontally.
+
+        Args:
+            dx: Horizontal offset in pixels.
+        """
         self._drag(self.X_DRAGGABLE, dx, 0)
 
     def drag_y_only(self, dy: int):
+        """
+        Drag the Y-axis restricted draggable element vertically.
+
+        Args:
+            dy: Vertical offset in pixels.
+        """
         self._drag(self.Y_DRAGGABLE, 0, dy)
 
     def drag_inside_container(self, dx: int, dy: int):
+        """
+        Drag the container-restricted draggable element by the specified offset.
+
+        Args:
+            dx: Horizontal offset in pixels.
+            dy: Vertical offset in pixels.
+        """
         self._drag(self.CONTAINER_DRAGGABLE, dx, dy)
 
     # ---------- Helpers ----------
 
     def _drag(self, selector: str, dx: int, dy: int):
+        """
+        Internal helper to drag an element by selector using mouse actions.
+
+        Args:
+            selector: CSS selector for the draggable element.
+            dx: Horizontal offset in pixels.
+            dy: Vertical offset in pixels.
+        """
         el = self.page.locator(selector)
         box = el.bounding_box()
         assert box, "Draggable bounding box not found"
@@ -91,4 +152,7 @@ class DragabblePage(BaseDemoQAPage):
         self.page.mouse.up()
 
     def _assert_page_ready(self):
+        """
+        Verify that the page is loaded and ready by checking the page header.
+        """
         expect(self.page.locator(self.PAGE_HEADER)).to_be_visible()
