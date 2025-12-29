@@ -1,0 +1,7 @@
+{
+  "type": "object",
+  "required": ["non_existing_field"],
+  "properties": {
+    "non_existing_field": { "type": "string" }
+  }
+}
