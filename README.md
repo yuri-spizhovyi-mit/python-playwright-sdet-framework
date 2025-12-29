@@ -66,41 +66,48 @@ Key architectural principles:
 python-playwright-sdet-framework/
 │
 ├── core/
-│   ├── browser.py              # Browser & context management
-│   ├── config.py               # Runtime configuration
-│   ├── base_page.py            # Base page abstraction
-│   ├── api_client.py           # API client foundation
-│   └── logger.py               # Logging utilities
+│   ├── api_client.py
+│   ├── base_page.py
+│   ├── config.py
+│   ├── logger.py
+│   └── allure_helpers.py
 │
 ├── apps/
 │   ├── demoqa/
-│   │   ├── pages/              # Page Objects
-│   │   └── tests/              # UI tests
+│   │   ├── pages/
+│   │   └── tests/
 │   │
 │   └── saucedemo/
-│   │   ├── pages/              # Page Objects
-│   │   └── tests/              # UI tests
+│       ├── pages/
+│       └── tests/
 │
 ├── api/
-│   └── reqres/
-│       ├── schemas/            # JSON schemas
-│       └── tests/              # API tests
+│   ├── postman_echo/
+│   │   ├── client.py
+│   │   ├── test_data.py
+│   │   ├── schemas/
+│   │   └── tests/
+│   │
+│   └── jsonplaceholder/
+│       ├── client.py
+│       ├── schemas/
+│       └── tests/
 │
 ├── utils/
-│   ├── data_generators.py
-│   └── helpers.py
+│   ├── data_generator.py
+│   ├── validators.py
+│   └── retry.py
 │
 ├── reports/
-│   ├── screenshots/            # Failure screenshots
-│   ├── traces/                 # Playwright traces (optional)
-│   └── allure-results/         # Raw Allure results
+│   ├── screenshots/
+│   └── traces/
 │
 ├── .github/
 │   └── workflows/
-│       └── test_suite.yml      # CI pipeline
+│       └── test-suite.yml
 │
-├── conftest.py                 # Global pytest fixtures
-├── pytest.ini                  # Pytest configuration
+├── conftest.py
+├── pytest.ini
 ├── requirements.txt
 ├── .env.example
 └── README.md
@@ -220,16 +227,15 @@ JSON Schema is used as a first-class contract mechanism.
 Both positive and negative schema validation tests are included to
 demonstrate detection of breaking API changes.
 
-### Why Postman Echo?
+### JSONPlaceholder
 
-Public demo APIs can be unstable or protected by traffic filters.
-Postman Echo is intentionally chosen because it is:
+Used for REST-style resource validation.
 
-- Deterministic
-- CI-friendly
-- Designed specifically for testing HTTP clients
+Covers:
 
-This ensures the API test suite remains reliable and non-flaky.
+- Resource listing (e.g. posts)
+- Schema validation
+- Read-only operations (CI-safe)
 
 ---
 
