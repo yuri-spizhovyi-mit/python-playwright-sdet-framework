@@ -1,6 +1,7 @@
 # apps/demoqa/tests/conftest.py
 
 import pytest
+from utils.data_generator import full_name, email, address
 
 
 @pytest.fixture
@@ -49,11 +50,17 @@ def date_picker_values():
 
 @pytest.fixture
 def text_box_form_data():
+    """
+    Test data for DemoQA Text Box form.
+
+    Generated dynamically to avoid hardcoded values
+    while keeping test intent explicit.
+    """
     return {
-        "full_name": "John Doe",
-        "email": "john@doe.com",
-        "current_address": "123 Main St",
-        "permanent_address": "456 Oak Ave",
+        "full_name": full_name(),
+        "email": email(),
+        "current_address": address(),
+        "permanent_address": address(),
     }
 
 

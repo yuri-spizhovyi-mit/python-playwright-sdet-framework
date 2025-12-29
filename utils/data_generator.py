@@ -1,8 +1,15 @@
-# Faker, random data
 from faker import Faker
 
 fake = Faker()
 
 
-def email():
+def full_name() -> str:
+    return fake.name()
+
+
+def email() -> str:
     return fake.email()
+
+
+def address() -> str:
+    return fake.address().replace("\n", " ")
