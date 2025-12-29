@@ -134,6 +134,26 @@ jobs:
           sudo mv allure-2.25.0 /opt/allure
           sudo ln -s /opt/allure/bin/allure /usr/bin/allure
 
+      - name: Add Allure executor metadata
+        run: |
+          cat <<EOF > allure-results/executor.json
+          {
+            "name": "GitHub Actions",
+            "type": "github",
+            "url": "https://github.com/${{ github.repository }}/actions",
+            "buildOrder": "${{ github.run_number }}",
+            "buildName": "Run #${{ github.run_number }}",
+            "buildUrl": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          }
+          EOF
+
+      - name: Restore Allure history
+        run: |
+          if [ -d allure-report/history ]; then
+            mkdir -p allure-results/history
+            cp -r allure-report/history/* allure-results/history/
+          fi
+
       - name: Generate Allure HTML report
         run: |
           mkdir -p allure-results
