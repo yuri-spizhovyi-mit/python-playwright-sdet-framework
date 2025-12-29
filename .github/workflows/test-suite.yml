@@ -41,6 +41,15 @@ jobs:
         run: |
           pytest -m api -v --alluredir=allure-results/api
 
+      - name: Add Allure environment info (API)
+        if: always()
+        run: |
+          echo "Layer=API" >> allure-results/api/environment.properties
+          echo "API_PostmanEcho=https://postman-echo.com" >> allure-results/api/environment.properties
+          echo "API_JSONPlaceholder=https://jsonplaceholder.typicode.com" >> allure-results/api/environment.properties
+          echo "Python=3.12" >> allure-results/api/environment.properties
+          echo "CI=true" >> allure-results/api/environment.properties
+
       - name: Upload API Allure results
         if: always()
         uses: actions/upload-artifact@v4
@@ -78,6 +87,15 @@ jobs:
         run: |
           pytest -m smoke -v --alluredir=allure-results/ui
         continue-on-error: true
+
+      - name: Add Allure environment info (UI)
+        if: always()
+        run: |
+          echo "Layer=UI" >> allure-results/ui/environment.properties
+          echo "Browser=${BROWSER}" >> allure-results/ui/environment.properties
+          echo "Headless=${HEADLESS}" >> allure-results/ui/environment.properties
+          echo "Python=3.12" >> allure-results/ui/environment.properties
+          echo "CI=true" >> allure-results/ui/environment.properties
 
       - name: Upload UI Allure results
         if: always()

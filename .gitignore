@@ -31,6 +31,7 @@ Thumbs.db
 
 # Allure output (some setups write here too)
 allure-results/
+allure-report/
 
 # Extra artifacts created by root conftest
 reports/traces/*
@@ -40,3 +41,4 @@ reports/logs/*
 
 *.log
 .vscode/settings.json
+

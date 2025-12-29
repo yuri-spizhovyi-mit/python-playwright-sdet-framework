@@ -4,6 +4,7 @@
 [![Playwright](https://img.shields.io/badge/playwright-python-green)](https://playwright.dev/python/)
 [![Pytest](https://img.shields.io/badge/pytest-framework-orange)](https://docs.pytest.org/)
 [![Allure Report](https://img.shields.io/badge/Allure-Live_Report-blue)](https://yuri-spizhovyi-mit.github.io/python-playwright-sdet-framework/)
+![Test Suite](https://github.com/yuri-spizhovyi-mit/python-playwright-sdet-framework/actions/workflows/test-suite.yml/badge.svg)
 
 ---
 
