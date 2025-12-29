@@ -12,7 +12,7 @@ Notes:
 """
 
 import pytest
-
+import allure
 from apps.demoqa.pages.elements_page import ElementsPage
 from apps.demoqa.pages.text_box_page import TextBoxPage
 
@@ -42,6 +42,9 @@ def test_text_box_page_opens_from_elements_menu(page):
     TextBoxPage(page)
 
 
+@allure.epic("UI")
+@allure.feature("DemoQA")
+@allure.story("Text Box Form")
 @pytest.mark.smoke
 def test_text_box_form_submission(page, text_box_form_data):
     """
