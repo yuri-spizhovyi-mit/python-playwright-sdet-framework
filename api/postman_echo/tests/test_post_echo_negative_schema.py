@@ -1,5 +1,6 @@
 import json
 import pytest
+import allure
 from jsonschema import validate, ValidationError
 from pathlib import Path
 
@@ -7,6 +8,9 @@ BASE_DIR = Path(__file__).resolve().parents[1]
 INVALID_SCHEMA = BASE_DIR / "schemas" / "post_response_invalid_schema.json"
 
 
+@allure.epic("API")
+@allure.feature("Postman Echo")
+@allure.story("POST /post")
 @pytest.mark.api
 def test_post_echo_fails_schema_validation(echo_client):
     payload = {"key": "value"}
