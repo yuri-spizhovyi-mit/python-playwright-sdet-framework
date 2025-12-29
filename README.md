@@ -193,6 +193,45 @@ Tracing is disabled by default to keep CI fast and storage usage minimal.
 
 ---
 
+## API Automation Architecture
+
+This framework includes a dedicated API automation layer designed with
+the same production-grade principles as the UI tests.
+
+### Design Principles
+
+- Clear separation between API client, test logic, schemas, and test data
+- Deterministic and CI-safe external APIs
+- No test assertions inside client code
+- Contract validation using JSON Schema
+- Session-scoped API clients for performance
+
+### API Client Layer
+
+Each external system is represented by a thin client wrapper.
+For example, the Postman Echo API is implemented via `EchoClient`,
+which encapsulates endpoint paths and HTTP mechanics while returning
+raw responses to the tests.
+
+### Schema Validation
+
+JSON Schema is used as a first-class contract mechanism.
+Both positive and negative schema validation tests are included to
+demonstrate detection of breaking API changes.
+
+### Why Postman Echo?
+
+Public demo APIs can be unstable or protected by traffic filters.
+Postman Echo is intentionally chosen because it is:
+
+- Deterministic
+- CI-friendly
+- Designed specifically for testing HTTP clients
+
+This ensures the API test suite remains reliable and non-flaky.
+
+---
+
 ## Continuous Integration
 
 ### GitHub Actions

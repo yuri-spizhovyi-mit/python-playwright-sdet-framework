@@ -7,7 +7,7 @@ BASE_DIR = Path(__file__).resolve().parents[1]
 INVALID_SCHEMA = BASE_DIR / "schemas" / "post_response_invalid_schema.json"
 
 
-@pytest.api
+@pytest.mark.api
 def test_post_echo_fails_schema_validation(echo_client):
     payload = {"key": "value"}
 

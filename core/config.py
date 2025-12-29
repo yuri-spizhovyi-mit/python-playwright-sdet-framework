@@ -133,6 +133,14 @@ class Config:
         os.getenv("ENABLE_CONSOLE_CAPTURE", "true").lower() == "true"
     )
 
+    # ============================================================================
+    # JSONPLACEHOLDER
+    # ============================================================================
+    JSONPLACEHOLDER_URL = os.getenv(
+        "JSONPLACEHOLDER_URL",
+        "https://jsonplaceholder.typicode.com",
+    )
+
     @classmethod
     def is_ci(cls) -> bool:
         """Check if running in CI environment."""
