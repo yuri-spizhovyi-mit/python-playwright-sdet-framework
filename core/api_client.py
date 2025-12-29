@@ -38,6 +38,16 @@ class APIClient:
         self.timeout = timeout or Config.API_TIMEOUT
 
         self.session: Session = requests.Session()
+
+        # ✅ Default transport-level headers
+        default_headers = {
+            "User-Agent": "python-playwright-sdet-framework/1.0",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        # Apply defaults first, then allow overrides
+        self.session.headers.update(default_headers)
         self.session.headers.update(headers or {})
 
         self.logger = get_logger(self.__class__.__name__)

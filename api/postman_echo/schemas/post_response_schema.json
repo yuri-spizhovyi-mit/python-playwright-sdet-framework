@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "required": ["json", "headers", "url"],
+  "properties": {
+    "json": { "type": ["object", "null"] },
+    "headers": { "type": "object" },
+    "url": { "type": "string" }
+  }
+}

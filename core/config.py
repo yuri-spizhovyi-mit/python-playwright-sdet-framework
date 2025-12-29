@@ -38,7 +38,7 @@ class Config:
     DEMOQA_URL = os.getenv("DEMOQA_URL", "https://demoqa.com")
 
     # API Systems Under Test
-    REQRES_URL = os.getenv("REQRES_URL", "https://reqres.in/api")
+    POSTMAN_ECHO_URL = os.getenv("POSTMAN_ECHO_URL", "https://postman-echo.com")
 
     # ============================================================================
     # Test Credentials
@@ -59,10 +59,6 @@ class Config:
     # Secrets
     SAUCE_PASSWORD = os.getenv("SAUCE_PASSWORD", "secret_sauce")
     SAUCE_INVALID_PASSWORD = os.getenv("SAUCE_INVALID_PASSWORD", "invalid_password")
-
-    # ReqRes API (public test API uses fixed credentials)
-    REQRES_EMAIL = os.getenv("REQRES_EMAIL", "eve.holt@reqres.in")
-    REQRES_PASSWORD = os.getenv("REQRES_PASSWORD", "cityslicka")
 
     # ============================================================================
     # Test Artifacts & Reporting
